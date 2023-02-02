@@ -55,8 +55,16 @@ public class Card {
     this.facedown = facedown;
   }
   
-  public void flip() {
-    facedown = facedown == false ? true : false;
+  public boolean turnFaceUp() {
+    if (!facedown) return false;
+    facedown = false;
+    return true;
+  }
+  
+  public boolean turnFaceDown() {
+    if (facedown) return false;
+    facedown = true;
+    return true;
   }
   
   public void changepos(int xpos, int ypos) {
@@ -203,5 +211,9 @@ public class Card {
   
   public Suit getSuit() {
     return suit;
+  }
+  
+  public boolean isFaceUp() {
+    return !facedown;
   }
 }
