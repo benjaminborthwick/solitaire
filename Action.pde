@@ -49,11 +49,12 @@ public class Action {
   public void undoMove() {
     dest.setSelectedNum(num);
     swap(dest, source, cardFlipped);
-    
   }
   
   public void undoDeal() {
-    
+    for (int i = 9; i >= 0; i--) {
+      deck[size++ - 1] = piles[i].pop().getId();
+    }
   }
   
   public void undoAscend() {

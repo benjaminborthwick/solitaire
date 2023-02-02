@@ -51,8 +51,10 @@ void draw() {
     stroke(230, 230, 60);
     strokeWeight(5);
     rect(597, 46, 45 + (size / 10) * 10, 80);
-    if (mouseClicked) newDeal = true;
-      
+    if (mouseClicked) {
+      newDeal = true;
+      new Action();
+    } 
   }
   for (Pile pile: piles) {
     if (newDeal) {

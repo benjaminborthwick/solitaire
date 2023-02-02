@@ -122,6 +122,10 @@ public class Pile {
     return cards.size();
   }
   
+  public Card pop() {
+    return cards.remove();
+  }
+  
   public Card top() {
     return cards.get(0);
   }
