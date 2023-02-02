@@ -192,4 +192,16 @@ public class Card {
     circle(20 + 2 * posx, 20 + 2 * posy, 9);
     scale(2);
   }
+  
+  public String getValue() {
+    return value;
+  }
+  
+  public int getNumericValue() {
+    return id % 13 + 1;
+  }
+  
+  public Suit getSuit() {
+    return suit;
+  }
 }

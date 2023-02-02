@@ -2,9 +2,12 @@ import java.util.LinkedList;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
+static boolean mouseClicked;
+static boolean prevPressed;
 static int[] deck;
 static int size = 104;
 static Pile[] piles = new Pile[10];
+static Pile selected;
 void setup() {
   size(800, 600);
   background(20, 150, 70);
@@ -27,14 +30,18 @@ void setup() {
     piles[i % 10].deal(i < 54);
   }
 }
+
 int glowpile = 0;
+
 void draw() {
+  if (!prevPressed && mousePressed) mouseClicked = true;
+  else mouseClicked = false;
+  prevPressed = mousePressed;
   background(20, 150, 70);
   for (Pile pile: piles) {
     pile.draw();
+    pile.checkGlow();
   }
-  if (mousePressed) glowpile = (glowpile + 1) % 10;
-  piles[glowpile].glow();
   System.out.println(frameRate);
 }
 
