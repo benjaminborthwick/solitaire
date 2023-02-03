@@ -34,9 +34,10 @@ public class Action {
     moveHist.push(this);
   }
   
-  public Action(Pile source) {
+  public Action(Pile source, boolean cardFlipped) {
     this.type = 2;
     this.source = source;
+    this.cardFlipped = cardFlipped;
     moveHist.push(this);
   }
   
@@ -47,17 +48,22 @@ public class Action {
   }
   
   public void undoMove() {
-    dest.setSelectedNum(num);
-    swap(dest, source, cardFlipped);
+    swap(dest, source, num, cardFlipped);
   }
   
   public void undoDeal() {
     for (int i = 9; i >= 0; i--) {
-      deck[size++ - 1] = piles[i].pop().getId();
+      deck[size++] = piles[i].pop().getId();
+      piles[i].checkTopChunk();
     }
   }
   
   public void undoAscend() {
-    
+    if (source.size() != 0 && cardFlipped) source.top().turnFaceUp();
+    Card[] cards = completed.pop().getCards();
+    for (int i = 12; i >= 0; i--) {
+      source.placeCard(cards[i]);
+    }
+    undo();
   }
 }

@@ -1,26 +1,29 @@
 public boolean swapValid(Pile source, Pile dest) {
-  return source.top().getNumericValue() - 1 + source.getSelectedNum() == dest.top().getNumericValue() - 1 || dest.size() == 0;
+  return dest.size() == 0 || source.top().getNumericValue() - 1 + source.getSelectedNum() == dest.top().getNumericValue() - 1;
 }
 
-public void swap(Pile source, Pile dest, boolean undo, boolean undoFlip) {
+public void swap(Pile source, Pile dest, int num, boolean undo, boolean undoFlip) {
+  System.out.println(num);
   if (undoFlip) dest.top().turnFaceDown();
-  for (int i = source.getSelectedNum() - 1; i >= 0; i--) {
-    dest.placeCard(source.cards.remove(i));
+  for (int i = num - 1; i >= 0; i--) {
+    if (source.size() > 0) dest.placeCard(source.cards.remove(i));
+    else System.out.println("ERROR");
   }
   selected = null;
-  if (!undo) new Action(source, dest, source.getSelectedNum(), source.top().turnFaceUp());
+  if (!undo) new Action(source, dest, num, source.size() > 0 ? source.top().turnFaceUp() : false);
   source.checkTopChunk();
   if (dest.getTopChunk() == 13) {
-    dest.ascend();
+    new AscendPile(50 + completed.size() * 75, 50, dest);
+    new Action(dest, dest.size() > 0 ? dest.top().turnFaceUp() : false);
   }
 }
 
-public void swap(Pile source, Pile dest) {
-  swap(source, dest, false, false);
+public void swap(Pile source, Pile dest, int num) {
+  swap(source, dest, num, false, false);
 }
 
-public void swap(Pile source, Pile dest, boolean undoFlip) {
-  swap(source, dest, true, undoFlip);
+public void swap(Pile source, Pile dest, int num, boolean undoFlip) {
+  swap(source, dest, num, true, undoFlip);
 }
 
 public class Pile {
@@ -49,19 +52,29 @@ public class Pile {
   
   public void placeCard(Card card) {
     card.changepos(posx, posy + cards.size() * 23);
-    cards.addFirst(card);
-    if (card.getSuit() == topSuit) topChunk++;
+    if (size() != 0 && card.getSuit() == topSuit && top().getNumericValue() == card.getNumericValue() + 1) topChunk++;
     else {
       topChunk = 1;
       topSuit = card.getSuit();
     }
+    cards.addFirst(card);
   }
   
   public int checkTopChunk() {
+    int chunkNum;
+    if (size() == 0) {
+      topSuit = null;
+      topChunk = 0;
+      return 0;
+    }
     topChunk = 1;
+    chunkNum = top().getNumericValue();
     topSuit = top().getSuit();
     for (int i = 1; i < cards.size(); i++) {
-      if (cards.get(i).isFaceUp() && cards.get(i).getSuit() == topSuit) topChunk++;
+      if (cards.get(i).isFaceUp() && cards.get(i).getSuit() == topSuit && cards.get(i).getNumericValue() == chunkNum + 1) {
+        topChunk++;
+        chunkNum++;
+      }
       else break;
     }
     return topChunk;
@@ -73,10 +86,11 @@ public class Pile {
       return;
     }
     if (selected != this) {
+      System.out.println(topChunk);
       selectedNum = min(topChunk, max(cards.size() - (mouseY - posy) / 23, 1));
+      System.out.println("num: " + selectedNum);
     }
     trySwap();
-    System.out.println(topChunk);
   }
   
   public void trySwap() {
@@ -85,11 +99,12 @@ public class Pile {
       if (mouseClicked) selected = null;
     } else if (selected == null) {
       glow(230, 230, 60, selectedNum);
-      if (mouseClicked) selected = this;
+      if (mouseClicked && size() > 0) selected = this;
     } else {
+      System.out.println(getSelectedNum());
       if (swapValid(selected, this)) {
         glow(60, 190, 60, cards.size());
-        if (mouseClicked) swap(selected, this);
+        if (mouseClicked) swap(selected, this, selected.getSelectedNum());
       } else {
         glow(230, 40, 40, cards.size());  
       }

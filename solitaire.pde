@@ -8,6 +8,7 @@ static int[] deck;
 static int size = 104;
 static Pile[] piles = new Pile[10];
 public static Pile selected;
+static Stack<AscendPile> completed;
 void setup() {
   size(800, 600);
   background(20, 150, 70);
@@ -30,6 +31,7 @@ void setup() {
     piles[i % 10].deal(i < 44);
   }
   initMoveHist();
+  completed = new Stack<AscendPile>();
 }
 
 int glowpile = 0;
@@ -59,6 +61,7 @@ void draw() {
   for (Pile pile: piles) {
     if (newDeal) {
       pile.deal(false);
+      pile.checkTopChunk();
     }
     pile.draw();
     pile.checkGlow();
@@ -74,6 +77,9 @@ void draw() {
     strokeWeight(5);
     rect(695, 505, 60, 40);
     if (mouseClicked) undoLastAction();
+  }
+  for (AscendPile ascended : completed) {
+    ascended.draw();
   }
 }
 
