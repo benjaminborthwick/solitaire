@@ -86,9 +86,7 @@ public class Pile {
       return;
     }
     if (selected != this) {
-      System.out.println(topChunk);
       selectedNum = min(topChunk, max(cards.size() - (mouseY - posy) / 23, 1));
-      System.out.println("num: " + selectedNum);
     }
     trySwap();
   }
@@ -98,8 +96,10 @@ public class Pile {
       glow(230, 230, 60, selectedNum);
       if (mouseClicked) selected = null;
     } else if (selected == null) {
-      glow(230, 230, 60, selectedNum);
-      if (mouseClicked && size() > 0) selected = this;
+      if (size() > 0) {
+        glow(230, 230, 60, selectedNum);
+        if (mouseClicked) selected = this;
+      }
     } else {
       System.out.println(getSelectedNum());
       if (swapValid(selected, this)) {

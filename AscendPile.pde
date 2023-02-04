@@ -10,6 +10,7 @@ public class AscendPile {
     }
     cards[0].changepos(posx, posy);
     completed.push(this);
+    score += 101;
   }
   
   public void draw() {

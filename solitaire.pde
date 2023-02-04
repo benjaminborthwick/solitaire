@@ -9,6 +9,7 @@ static int size = 104;
 static Pile[] piles = new Pile[10];
 public static Pile selected;
 static Stack<AscendPile> completed;
+static int score = 800;
 void setup() {
   size(800, 600);
   background(20, 150, 70);
@@ -48,7 +49,7 @@ void draw() {
   for (int i = 0; i < size / 10; i++) {
     rect(600 + 10 * i, 50, 50, 75, 7);
   }
-  if (mouseX > 595 && mouseX < 655 + (size / 10) * 10 && mouseY > 45 && mouseY < 130) {
+  if (size > 0 && mouseX > 595 && mouseX < 655 + (size / 10) * 10 && mouseY > 45 && mouseY < 130) {
     noFill();
     stroke(230, 230, 60);
     strokeWeight(5);
@@ -67,6 +68,9 @@ void draw() {
     pile.checkGlow();
   }
   newDeal = false;
+  fill(255);
+  textSize(32);
+  text("Score: " + String.valueOf(score), 300, 40);
   fill(220, 20, 20);
   noStroke();
   rect(715, 515, 40, 20);

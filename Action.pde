@@ -2,6 +2,7 @@ import java.util.Stack;
 private static Stack<Action> moveHist;
 
 public static void undoLastAction() {
+  score--;
   if (moveHist.empty()) return;
   moveHist.pop().undo();
 }
@@ -27,6 +28,7 @@ public class Action {
     this.num = num;
     this.cardFlipped = cardFlipped;
     moveHist.push(this);
+    score--;
   }
   
   public Action() {
@@ -59,11 +61,12 @@ public class Action {
   }
   
   public void undoAscend() {
+    score -= 98;
     if (source.size() != 0 && cardFlipped) source.top().turnFaceUp();
     Card[] cards = completed.pop().getCards();
     for (int i = 12; i >= 0; i--) {
       source.placeCard(cards[i]);
     }
-    undo();
+    undoLastAction();
   }
 }
