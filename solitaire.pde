@@ -5,14 +5,19 @@ import java.util.concurrent.ThreadLocalRandom;
 static boolean mouseClicked;
 static boolean prevPressed;
 static int[] deck;
-static int size = 104;
-static Pile[] piles = new Pile[10];
+static int size;
+static Pile[] piles;
 public static Pile selected;
 static Stack<AscendPile> completed;
-static int score = 800;
+static int score;
+boolean gameWon;
 void setup() {
-  size(800, 600);
+  size(800, 800);
   background(20, 150, 70);
+  gameWon = false;
+  size = 104;
+  score = 800;
+  piles = new Pile[10];
   deck = new int[104];
   for (int i = 0; i < 104; i++) {
     deck[i] = i;
@@ -39,10 +44,28 @@ int glowpile = 0;
 boolean newDeal = false;
 
 void draw() {
+  background(20, 150, 70);
   if (!prevPressed && mousePressed) mouseClicked = true;
   else mouseClicked = false;
   prevPressed = mousePressed;
-  background(20, 150, 70);
+  if (gameWon) winGame();
+  else playGame();
+  
+}
+
+Card deal(int posx, int posy, boolean facedown) {
+  Card card;
+  if (size == 0) {
+    System.out.println("Deck is empty; can not deal");
+    return null;
+  } else {
+    card = new Card(deck[size-- - 1], posx, posy, facedown);
+    card.draw();
+  }
+  return card;
+}
+
+void playGame() {
   stroke(0);
   strokeWeight(1);
   fill(220, 20, 20);
@@ -87,14 +110,24 @@ void draw() {
   }
 }
 
-Card deal(int posx, int posy, boolean facedown) {
-  Card card;
-  if (size == 0) {
-    System.out.println("Deck is empty; can not deal");
-    return null;
-  } else {
-    card = new Card(deck[size-- - 1], posx, posy, facedown);
-    card.draw();
+void winGame() {
+  if (!gameWon) gameWon = true;
+  fill(220, 220, 20);
+  textSize(180);
+  text("You Win!", 100, 300);
+  fill(255);
+  textSize(64);
+  text("Score: " + String.valueOf(score), 270, 450);
+  noStroke();
+  rect(340, 520, 135, 50, 5);
+  fill(0);
+  textSize(28);
+  text("Play Again", 347, 555);
+  if (mouseX > 335 && mouseX < 480 && mouseY > 515 && mouseY < 575) {
+    stroke(220, 220, 20);
+    strokeWeight(5);
+    noFill();
+    rect(337, 518, 140, 54);
+    if (mouseClicked) setup();
   }
-  return card;
 }

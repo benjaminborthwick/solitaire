@@ -11,6 +11,7 @@ public class AscendPile {
     cards[0].changepos(posx, posy);
     completed.push(this);
     score += 101;
+    if (completed.size() == 8) winGame();
   }
   
   public void draw() {
